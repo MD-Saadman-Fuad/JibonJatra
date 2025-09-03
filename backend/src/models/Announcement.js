@@ -13,6 +13,10 @@ const announcementSchema = new mongoose.Schema(
       ref: "User",
       required: true
     },
+    viewedBy: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
+    }],
   },
   { timestamps: true }
 );

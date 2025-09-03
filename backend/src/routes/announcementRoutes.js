@@ -4,6 +4,7 @@ import {
   createAnnouncement,
   updateAnnouncement,
   deleteAnnouncement,
+  markAnnouncementViewed,
 } from "../controllers/announcementController.js";
 import auth from "../middleware/auth.js";
 
@@ -16,6 +17,8 @@ router.get("/", getAnnouncements);
 router.post("/", auth("admin"), createAnnouncement);
 router.put("/:id", auth("admin"), updateAnnouncement);
 router.delete("/:id", auth("admin"), deleteAnnouncement);
+
+router.post("/:id/viewed", auth(), markAnnouncementViewed);
 
 export default router;
 

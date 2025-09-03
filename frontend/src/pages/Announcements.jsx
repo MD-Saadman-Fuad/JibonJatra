@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getAnnouncements } from "../api/announcements";
+import { getAnnouncements, markAnnouncementViewed } from "../api/announcements";
 
 const UserAnnouncements = () => {
   const [announcements, setAnnouncements] = useState([]);
@@ -36,7 +36,23 @@ const UserAnnouncements = () => {
             key={a._id}
             className="bg-gradient-to-br from-white via-gray-50 to-gray-100 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition duration-300 transform hover:-translate-y-1"
           >
-            <h3 className="text-2xl font-bold text-blue-600 mb-2">{a.title}</h3>
+            <div className="flex justify-between items-center">
+              <h3 className="text-2xl font-bold text-blue-600 mb-2">{a.title}</h3>
+            <button
+              type="button"
+              className="w-1/4 py-3 rounded-xl font-semibold text-white text-lg transition-all duration-300 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 hover:scale-105 hover:shadow-lg active:scale-95 flex items-center justify-center gap-2"
+              onClick={async () => {
+                try {
+                  await markAnnouncementViewed(a._id);
+                } catch (err) {
+                  console.error("Failed to mark as viewed", err);
+                }
+              }}
+            >
+              Viewed
+            </button>
+
+            </div>
             <p className="text-gray-700 mb-4">{a.message}</p>
             <div className="flex flex-wrap gap-2 text-sm text-gray-500">
               {a.publishedDate && (
