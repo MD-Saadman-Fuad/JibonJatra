@@ -154,6 +154,20 @@ export default function AdminAnnouncements() {
                   📍 Location: {a.location}
                 </p>
               )}
+
+
+                {Array.isArray(a.viewedBy) && a.viewedBy.length > 0 && (
+                  <div className="mt-4">
+                    <h4 className="text-lg font-semibold text-blue-700 mb-2">Viewed By:</h4>
+                    <ul className="list-disc pl-5">
+                      {a.viewedBy.map((user) => (
+                        <li key={user._id || user.name} className="text-gray-700">
+                          {user.name || "Unknown User"}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
             </div>
 
             <div className="flex space-x-2 mt-4">
