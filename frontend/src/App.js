@@ -33,6 +33,7 @@ import SponsoredPosts from './pages/SponsoredPosts';
 import AdminSponsoredPosts from './pages/AdminSponsoredPosts';
 
 import HomeRent from './pages/HomeRent';
+import CreateHomeRent from './pages/CreateHomeRental';
 
 // Protected Route Component
 const ProtectedRoute = ({ children, user, adminOnly = false }) => {
@@ -101,6 +102,7 @@ function App() {
           <Route path="/services/:id" element={<ServiceDetail token={token} user={user} />} />
           <Route path="/feed" element={<Feed />} />
           <Route path="/home-rent" element={<HomeRent />} />
+          <Route path="/home-rent/create" element={<CreateHomeRent />} />
           <Route
             path="/admin"
             element={
