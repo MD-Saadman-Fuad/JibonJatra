@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { sponsoredAPI } from '../api/sponsored';
+import { getImageUrl } from '../api/client';
 import { Star, Calendar, Eye } from 'lucide-react';
 
 const formatDate = (dateString) => {
@@ -12,19 +13,18 @@ const SponsoredPostCard = ({ post, isInactive = false }) => {
     if (post.image) {
       console.log('Sponsored post image:', {
         storedPath: post.image,
-        imageUrl: `http://localhost:5000/${post.image}`,
+        imageUrl: getImageUrl(post.image),
         postTitle: post.title
       });
     }
   }, [post.image, post.title]);
 
   return (
-    <div className={`bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow ${
-      isInactive ? 'opacity-60' : 'border-2 border-yellow-300'
-    }`}>
+    <div className={`bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow ${isInactive ? 'opacity-60' : 'border-2 border-yellow-300'
+      }`}>
       {post.image && (
         <img
-          src={`http://localhost:5000/${post.image}`}
+          src={getImageUrl(post.image)}
           alt={post.title}
           className="w-full h-48 object-cover"
           onError={(e) => {
@@ -33,7 +33,7 @@ const SponsoredPostCard = ({ post, isInactive = false }) => {
           }}
         />
       )}
-      
+
       <div className="p-6">
         <div className="flex items-center gap-2 mb-3">
           <Star className="text-yellow-500" size={20} fill="currentColor" />
@@ -70,13 +70,13 @@ export default function SponsoredPosts() {
     try {
       const res = await sponsoredAPI.getSponsoredPosts();
       setPosts(res.data.data || []);
-      
+
       // Debug: log all posts with image info
       if (res.data.data && res.data.data.length > 0) {
         console.log('All sponsored posts:', res.data.data.map(post => ({
           title: post.title,
           image: post.image,
-          imageUrl: post.image ? `http://localhost:5000/${post.image}` : 'No image'
+          imageUrl: post.image ? getImageUrl(post.image) : 'No image'
         })));
       }
     } catch (err) {
@@ -119,7 +119,7 @@ export default function SponsoredPosts() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full mb-4">
             <Star className="text-white" size={32} fill="currentColor" />

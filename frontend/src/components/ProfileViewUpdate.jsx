@@ -48,7 +48,7 @@ export default function ProfileViewUpdate({ user, onUpdate }) {
     if (form.password.trim()) updateData.password = form.password;
 
     try {
-      const res = await fetch('http://localhost:5000/api/profile', {
+      const res = await fetch(`${process.env.REACT_APP_API_BASE || "https://jibonjatra.onrender.com/api"}/profile`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify(updateData),

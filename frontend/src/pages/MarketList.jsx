@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { fetchMarketItems, deleteMarketItemAPI } from "../api/market";
+import { getBackendUrl } from "../api/client";
 import { useNavigate } from "react-router-dom";
 
 const MarketList = ({ user }) => {
@@ -40,14 +41,14 @@ const MarketList = ({ user }) => {
   // Filter items based on search and filter criteria
   const filteredItems = items.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.source.toLowerCase().includes(searchTerm.toLowerCase());
-    
+      item.source.toLowerCase().includes(searchTerm.toLowerCase());
+
     // If "all" is selected, show all locations
     // If a custom location is typed, filter by that text
-    const matchesLocation = filterLocation === "all" || 
-                           (filterLocation === "custom" && item.location.toLowerCase().includes(locationInput.toLowerCase())) ||
-                           item.location === filterLocation;
-    
+    const matchesLocation = filterLocation === "all" ||
+      (filterLocation === "custom" && item.location.toLowerCase().includes(locationInput.toLowerCase())) ||
+      item.location === filterLocation;
+
     return matchesSearch && matchesLocation;
   });
 
@@ -70,7 +71,7 @@ const MarketList = ({ user }) => {
             <h1 className="text-3xl font-bold text-gray-900">Local Market</h1>
             <p className="text-gray-600 mt-2">Place for local farmers to sell their produce</p>
           </div>
-          
+
           {user?.role === "market_head" && (
             <button
               className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-lg flex items-center mt-4 md:mt-0 transition-colors shadow-md hover:shadow-lg"
@@ -105,7 +106,7 @@ const MarketList = ({ user }) => {
                 />
               </div>
             </div>
-            
+
             <div>
               <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">Filter by Location</label>
               <div className="flex flex-col space-y-2">
@@ -126,7 +127,7 @@ const MarketList = ({ user }) => {
                     <option key={location} value={location}>{location}</option>
                   ))}
                 </select>
-                
+
                 {filterLocation === "custom" && (
                   <input
                     type="text"
@@ -156,7 +157,7 @@ const MarketList = ({ user }) => {
                 {item.image ? (
                   <div className="relative h-48 overflow-hidden">
                     <img
-                      src={`http://localhost:5000${item.image}`}
+                      src={`${getBackendUrl()}${item.image}`}
                       alt={item.name}
                       className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                     />
@@ -171,10 +172,10 @@ const MarketList = ({ user }) => {
                     </svg>
                   </div>
                 )}
-                
+
                 <div className="p-5 flex-1 flex flex-col">
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">{item.name}</h3>
-                  
+
                   <div className="mb-4 flex items-center">
                     <svg className="h-5 w-5 text-gray-500 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -182,35 +183,35 @@ const MarketList = ({ user }) => {
                     </svg>
                     <span className="text-gray-600 text-sm">{item.location}</span>
                   </div>
-                  
+
                   <div className="mt-auto">
                     <div className="flex justify-between items-center mb-4">
                       <span className="text-2xl font-bold text-green-700">${item.price}</span>
                     </div>
-                    
+
                     {(user?.role === "admin" ||
                       (user?.role === "market_head" && user.id === item.createdBy)) && (
-                      <div className="flex space-x-2 pt-3 border-t border-gray-100">
-                        <button
-                          className="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-600 font-medium py-2 px-3 rounded-lg flex items-center justify-center transition-colors text-sm"
-                          onClick={() => navigate(`/market/edit/${item._id}`)}
-                        >
-                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                          </svg>
-                          Edit
-                        </button>
-                        <button
-                          className="flex-1 bg-red-50 hover:bg-red-100 text-red-600 font-medium py-2 px-3 rounded-lg flex items-center justify-center transition-colors text-sm"
-                          onClick={() => handleDelete(item._id)}
-                        >
-                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                          </svg>
-                          Delete
-                        </button>
-                      </div>
-                    )}
+                        <div className="flex space-x-2 pt-3 border-t border-gray-100">
+                          <button
+                            className="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-600 font-medium py-2 px-3 rounded-lg flex items-center justify-center transition-colors text-sm"
+                            onClick={() => navigate(`/market/edit/${item._id}`)}
+                          >
+                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                            Edit
+                          </button>
+                          <button
+                            className="flex-1 bg-red-50 hover:bg-red-100 text-red-600 font-medium py-2 px-3 rounded-lg flex items-center justify-center transition-colors text-sm"
+                            onClick={() => handleDelete(item._id)}
+                          >
+                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                            Delete
+                          </button>
+                        </div>
+                      )}
                   </div>
                 </div>
               </div>

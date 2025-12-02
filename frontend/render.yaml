@@ -1,0 +1,25 @@
+version: 2
+services:
+  # Frontend service
+  - type: web
+    name: jibonjatra-frontend
+    env: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./build
+    envVars:
+      - key: REACT_APP_API_BASE
+        value: https://jibonjatra-backend.onrender.com/api
+      - key: GENERATE_SOURCEMAP
+        value: false
+      - key: CI
+        value: false
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /static/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable

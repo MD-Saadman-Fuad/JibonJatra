@@ -199,6 +199,7 @@
 
 import { useState, useEffect } from "react";
 import { fetchService, updateServiceAPI } from "../api/services";
+import { getBackendUrl } from "../api/client";
 import { useParams, useNavigate } from "react-router-dom";
 
 export default function ServiceEdit({ token }) {
@@ -235,10 +236,10 @@ export default function ServiceEdit({ token }) {
           location: data.location || "",
           servicePicture: null,
         });
-        
+
         // Set preview if image exists
         if (data.servicePicture) {
-          setPreview(`http://localhost:5000${data.servicePicture}`);
+          setPreview(`${getBackendUrl()}${data.servicePicture}`);
         }
       } catch (err) {
         console.error("Failed to load service:", err);
@@ -251,11 +252,11 @@ export default function ServiceEdit({ token }) {
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    
+
     if (files && files[0]) {
       const file = files[0];
       setForm({ ...form, [name]: file });
-      
+
       // Create preview
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -265,7 +266,7 @@ export default function ServiceEdit({ token }) {
     } else {
       setForm({ ...form, [name]: value });
     }
-    
+
     // Clear error when field is edited
     if (errors[name]) {
       setErrors({
@@ -277,7 +278,7 @@ export default function ServiceEdit({ token }) {
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!form.providerName.trim()) newErrors.providerName = "Provider name is required";
     if (!form.serviceName.trim()) newErrors.serviceName = "Service name is required";
     if (!form.servicePrice || form.servicePrice <= 0) newErrors.servicePrice = "Valid price is required";
@@ -285,16 +286,16 @@ export default function ServiceEdit({ token }) {
     if (!form.serviceDetail.trim()) newErrors.serviceDetail = "Service details are required";
     if (!form.providerContact.trim()) newErrors.providerContact = "Contact information is required";
     if (!form.location.trim()) newErrors.location = "Location is required";
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
-    
+
     setIsSubmitting(true);
     try {
       const data = new FormData();
@@ -332,7 +333,7 @@ export default function ServiceEdit({ token }) {
       <div className="max-w-2xl mx-auto">
         <div className="bg-white rounded-xl shadow-sm p-6 md:p-8">
           <div className="flex items-center mb-6">
-            <button 
+            <button
               onClick={() => navigate(-1)}
               className="flex items-center text-gray-600 hover:text-gray-900 mr-4"
             >
@@ -383,9 +384,8 @@ export default function ServiceEdit({ token }) {
                 name="providerName"
                 value={form.providerName}
                 onChange={handleChange}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors.providerName ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${errors.providerName ? "border-red-500" : "border-gray-300"
+                  }`}
                 placeholder="Enter provider name"
               />
               {errors.providerName && <p className="mt-1 text-sm text-red-600">{errors.providerName}</p>}
@@ -402,9 +402,8 @@ export default function ServiceEdit({ token }) {
                 name="serviceName"
                 value={form.serviceName}
                 onChange={handleChange}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors.serviceName ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${errors.serviceName ? "border-red-500" : "border-gray-300"
+                  }`}
                 placeholder="Enter service name"
               />
               {errors.serviceName && <p className="mt-1 text-sm text-red-600">{errors.serviceName}</p>}
@@ -427,9 +426,8 @@ export default function ServiceEdit({ token }) {
                   onChange={handleChange}
                   min="0"
                   step="0.01"
-                  className={`w-full pl-8 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                    errors.servicePrice ? "border-red-500" : "border-gray-300"
-                  }`}
+                  className={`w-full pl-8 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${errors.servicePrice ? "border-red-500" : "border-gray-300"
+                    }`}
                   placeholder="0.00"
                 />
               </div>
@@ -447,9 +445,8 @@ export default function ServiceEdit({ token }) {
                 name="serviceType"
                 value={form.serviceType}
                 onChange={handleChange}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors.serviceType ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${errors.serviceType ? "border-red-500" : "border-gray-300"
+                  }`}
                 placeholder="e.g., Cleaning, Repair, Consultation"
               />
               {errors.serviceType && <p className="mt-1 text-sm text-red-600">{errors.serviceType}</p>}
@@ -466,9 +463,8 @@ export default function ServiceEdit({ token }) {
                 value={form.serviceDetail}
                 onChange={handleChange}
                 rows={4}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors.serviceDetail ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${errors.serviceDetail ? "border-red-500" : "border-gray-300"
+                  }`}
                 placeholder="Describe your service in detail..."
               />
               {errors.serviceDetail && <p className="mt-1 text-sm text-red-600">{errors.serviceDetail}</p>}
@@ -485,9 +481,8 @@ export default function ServiceEdit({ token }) {
                 name="providerContact"
                 value={form.providerContact}
                 onChange={handleChange}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors.providerContact ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${errors.providerContact ? "border-red-500" : "border-gray-300"
+                  }`}
                 placeholder="Phone number or email"
               />
               {errors.providerContact && <p className="mt-1 text-sm text-red-600">{errors.providerContact}</p>}
@@ -504,9 +499,8 @@ export default function ServiceEdit({ token }) {
                 name="location"
                 value={form.location}
                 onChange={handleChange}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors.location ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${errors.location ? "border-red-500" : "border-gray-300"
+                  }`}
                 placeholder="Where is this service available?"
               />
               {errors.location && <p className="mt-1 text-sm text-red-600">{errors.location}</p>}

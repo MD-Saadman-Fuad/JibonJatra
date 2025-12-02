@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchServices, deleteServiceAPI } from "../api/services";
+import { getBackendUrl } from "../api/client";
 // import Rating from "../components/Rating";
 
 
@@ -43,30 +44,30 @@ export default function ServiceList({ token, user }) {
   // Apply filters and search
   useEffect(() => {
     let result = services;
-    
+
     // Apply search filter
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
-      result = result.filter(s => 
+      result = result.filter(s =>
         s.serviceName.toLowerCase().includes(term) ||
         s.serviceDetail.toLowerCase().includes(term) ||
         s.providerName.toLowerCase().includes(term) ||
         s.location.toLowerCase().includes(term)
       );
     }
-    
+
     // Apply service type filter
     if (serviceTypeFilter) {
       const term = serviceTypeFilter.toLowerCase();
       result = result.filter(s => s.serviceType.toLowerCase().includes(term));
     }
-    
+
     // Apply location filter
     if (locationFilter) {
       const term = locationFilter.toLowerCase();
       result = result.filter(s => s.location.toLowerCase().includes(term));
     }
-    
+
     setFilteredServices(result);
   }, [searchTerm, serviceTypeFilter, locationFilter, services]);
 
@@ -91,7 +92,7 @@ export default function ServiceList({ token, user }) {
             <h1 className="text-3xl font-bold text-gray-900">Available Services</h1>
             <p className="text-gray-600 mt-2">Find the perfect service for your needs</p>
           </div>
-          
+
           {user && user.role === "service provider" && (
             <button
               onClick={() => navigate("/services/create")}
@@ -127,7 +128,7 @@ export default function ServiceList({ token, user }) {
                 />
               </div>
             </div>
-            
+
             {/* Service Type Filter */}
             <div>
               <label htmlFor="serviceType" className="block text-sm font-medium text-gray-700 mb-1">Service Type</label>
@@ -147,7 +148,7 @@ export default function ServiceList({ token, user }) {
                 />
               </div>
             </div>
-            
+
             {/* Location Filter */}
             <div>
               <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">Location</label>
@@ -211,14 +212,14 @@ export default function ServiceList({ token, user }) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredServices.map((s) => (
               // <div key={s._id} className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300 flex flex-col">
-              <div 
-                key={s._id} 
+              <div
+                key={s._id}
                 className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300 flex flex-col cursor-pointer"
                 onClick={() => navigate(`/services/${s._id}`)}
->
+              >
                 <div className="relative h-48 overflow-hidden">
                   <img
-                    src={s.servicePicture ? `http://localhost:5000${s.servicePicture}` : "/logo.png"}
+                    src={s.servicePicture ? `${getBackendUrl()}${s.servicePicture}` : "/logo.png"}
                     alt={s.serviceName}
                     className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                   />
@@ -226,11 +227,11 @@ export default function ServiceList({ token, user }) {
                     {s.serviceType}
                   </div>
                 </div>
-                
+
                 <div className="p-5 flex-1 flex flex-col">
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">{s.serviceName}</h3>
                   <p className="text-gray-600 mb-4 flex-1">{s.serviceDetail}</p>
-                  
+
                   <div className="space-y-2 mb-4">
                     <div className="flex items-center">
                       <svg className="h-5 w-5 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -247,7 +248,7 @@ export default function ServiceList({ token, user }) {
                         {s.ratingAverage || 0} ({s.ratingCount || 0} reviews)
                       </span>
                     </div>
-                    
+
                     <div className="flex items-center">
                       <svg className="h-5 w-5 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -255,14 +256,14 @@ export default function ServiceList({ token, user }) {
                       </svg>
                       <span className="text-gray-600">{s.location}</span>
                     </div>
-                    
+
                     <div className="flex items-center">
                       <svg className="h-5 w-5 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                       </svg>
                       <span className="text-gray-600">{s.providerName}</span>
                     </div>
-                    
+
                     <div className="flex items-center">
                       <svg className="h-5 w-5 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
@@ -270,39 +271,39 @@ export default function ServiceList({ token, user }) {
                       <span className="text-gray-600">{s.providerContact}</span>
                     </div>
                   </div>
-                  
+
                   {/* Action Buttons */}
                   {user && (
-                    ((user.role === "service provider" && (user.id === s.createdBy?._id || user.id === s.createdBy)) || 
-                     user.role === "admin")
+                    ((user.role === "service provider" && (user.id === s.createdBy?._id || user.id === s.createdBy)) ||
+                      user.role === "admin")
                   ) && (
-                    <div className="flex space-x-2 pt-3 border-t border-gray-100">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();  // ← Prevent event from bubbling up
-                          navigate(`/services/edit/${s._id}`);
-                        }}
-                        className="flex-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-medium py-2 px-3 rounded-lg transition-colors text-sm flex items-center justify-center"
-                      >
-                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        </svg>
-                        Edit
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDelete(s._id);
-                        }}
-                        className="flex-1 bg-red-100 hover:bg-red-200 text-red-800 font-medium py-2 px-3 rounded-lg transition-colors text-sm flex items-center justify-center"
-                      >
-                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                        Delete
-                      </button>
-                    </div>
-                  )}
+                      <div className="flex space-x-2 pt-3 border-t border-gray-100">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();  // ← Prevent event from bubbling up
+                            navigate(`/services/edit/${s._id}`);
+                          }}
+                          className="flex-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-medium py-2 px-3 rounded-lg transition-colors text-sm flex items-center justify-center"
+                        >
+                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                          Edit
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(s._id);
+                          }}
+                          className="flex-1 bg-red-100 hover:bg-red-200 text-red-800 font-medium py-2 px-3 rounded-lg transition-colors text-sm flex items-center justify-center"
+                        >
+                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                          Delete
+                        </button>
+                      </div>
+                    )}
                 </div>
               </div>
             ))}

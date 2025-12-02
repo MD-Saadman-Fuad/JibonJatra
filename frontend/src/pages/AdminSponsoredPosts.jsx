@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { sponsoredAPI } from '../api/sponsored';
+import { getImageUrl } from '../api/client';
 import { Plus, Edit, Trash2, Image, Calendar, Star, Search } from 'lucide-react';
 
 export default function AdminSponsoredPosts() {
@@ -23,13 +24,13 @@ export default function AdminSponsoredPosts() {
       const res = await sponsoredAPI.getAllSponsoredPosts();
       setPosts(res.data.data || []);
       setFilteredPosts(res.data.data || []);
-      
+
       // Debug: log all posts with image info
       if (res.data.data && res.data.data.length > 0) {
         console.log('Admin - All sponsored posts:', res.data.data.map(post => ({
           title: post.title,
           image: post.image,
-          imageUrl: post.image ? `http://localhost:5000/${post.image}` : 'No image'
+          imageUrl: post.image ? getImageUrl(post.image) : 'No image'
         })));
       }
     } catch (err) {
@@ -54,7 +55,7 @@ export default function AdminSponsoredPosts() {
       post.title?.toLowerCase().includes(term) ||
       post.content?.toLowerCase().includes(term)
     );
-    
+
     setFilteredPosts(filtered);
   }, [searchTerm, posts]);
 
@@ -121,7 +122,7 @@ export default function AdminSponsoredPosts() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 flex flex-col items-center justify-start p-6 relative overflow-hidden">
-      
+
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute animate-bounce top-10 left-10 opacity-20">
           <Star size={40} className="text-purple-300" />
@@ -135,7 +136,7 @@ export default function AdminSponsoredPosts() {
       </div>
 
       <div className="w-full max-w-6xl bg-white rounded-2xl shadow-2xl overflow-hidden transform hover:scale-105 transition-all duration-300">
-        
+
         <div className="bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 p-8 text-center relative">
           <div className="absolute inset-0 bg-black opacity-10"></div>
           <div className="relative z-10">
@@ -267,12 +268,11 @@ export default function AdminSponsoredPosts() {
               </div>
             ) : (
               filteredPosts.map((post) => (
-                <div key={post._id} className={`bg-white border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${
-                  isExpired(post.endDate) ? 'opacity-70' : ''
-                }`}>
+                <div key={post._id} className={`bg-white border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${isExpired(post.endDate) ? 'opacity-70' : ''
+                  }`}>
                   {post.image && (
                     <img
-                      src={`http://localhost:5000/${post.image}`}
+                      src={getImageUrl(post.image)}
                       alt={post.title}
                       className="w-full h-48 object-cover rounded-lg mb-3"
                       onError={(e) => {
@@ -281,19 +281,18 @@ export default function AdminSponsoredPosts() {
                       }}
                     />
                   )}
-                  
+
                   <h3 className="font-semibold text-lg mb-2">{post.title}</h3>
                   <p className="text-gray-600 text-sm mb-3 line-clamp-2">{post.content}</p>
-                  
+
                   <div className="space-y-1 text-xs text-gray-500">
                     <p>Priority: <span className="font-medium">{post.priority}</span></p>
                     <p>Ends: <span className="font-medium">{formatDate(post.endDate)}</span></p>
-                    <p>Status: 
-                      <span className={`font-medium ml-1 ${
-                        !isExpired(post.endDate) 
-                          ? 'text-green-600' 
+                    <p>Status:
+                      <span className={`font-medium ml-1 ${!isExpired(post.endDate)
+                          ? 'text-green-600'
                           : 'text-red-600'
-                      }`}>
+                        }`}>
                         {!isExpired(post.endDate) ? 'Active' : 'Expired'}
                       </span>
                     </p>
@@ -306,7 +305,7 @@ export default function AdminSponsoredPosts() {
                     >
                       <Edit size={14} /> Edit
                     </button>
-                    
+
                     <button
                       onClick={() => handleDelete(post._id)}
                       className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm flex items-center gap-1"

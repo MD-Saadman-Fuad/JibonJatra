@@ -82,17 +82,18 @@
 // export default MarketEdit;
 import React, { useEffect, useState } from "react";
 import { fetchMarketItem, updateMarketItemAPI } from "../api/market";
+import { getBackendUrl } from "../api/client";
 import { useParams, useNavigate } from "react-router-dom";
 
 const MarketEdit = ({ user }) => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ 
-    name: "", 
-    price: "", 
-    location: "", 
-    source: "", 
-    image: null 
+  const [form, setForm] = useState({
+    name: "",
+    price: "",
+    location: "",
+    source: "",
+    image: null
   });
   const [loading, setLoading] = useState(true);
   const [preview, setPreview] = useState(null);
@@ -106,7 +107,7 @@ const MarketEdit = ({ user }) => {
         const res = await fetchMarketItem(id);
         setForm({ ...res.data, image: null });
         if (res.data.image) {
-          setPreview(`http://localhost:5000${res.data.image}`);
+          setPreview(`${getBackendUrl()}${res.data.image}`);
         }
       } catch (error) {
         console.error("Error loading item:", error);
@@ -121,7 +122,7 @@ const MarketEdit = ({ user }) => {
     if (e.target.name === "image") {
       const file = e.target.files[0];
       setForm({ ...form, image: file });
-      
+
       // Create preview
       if (file) {
         const reader = new FileReader();
@@ -135,7 +136,7 @@ const MarketEdit = ({ user }) => {
     } else {
       setForm({ ...form, [e.target.name]: e.target.value });
     }
-    
+
     // Clear error when field is edited
     if (errors[e.target.name]) {
       setErrors({
@@ -147,21 +148,21 @@ const MarketEdit = ({ user }) => {
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!form.name.trim()) newErrors.name = "Name is required";
     if (!form.price || form.price <= 0) newErrors.price = "Valid price is required";
     if (!form.location.trim()) newErrors.location = "Location is required";
     if (!form.source.trim()) newErrors.source = "Source is required";
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
-    
+
     setIsSubmitting(true);
     try {
       await updateMarketItemAPI(id, form, user.token);
@@ -187,7 +188,7 @@ const MarketEdit = ({ user }) => {
       <div className="max-w-2xl mx-auto">
         <div className="bg-white rounded-xl shadow-sm p-6 md:p-8">
           <div className="flex items-center mb-6">
-            <button 
+            <button
               onClick={() => navigate(-1)}
               className="flex items-center text-gray-600 hover:text-gray-900 mr-4"
             >
@@ -238,9 +239,8 @@ const MarketEdit = ({ user }) => {
                 name="name"
                 value={form.name}
                 onChange={handleChange}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
-                  errors.name ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 ${errors.name ? "border-red-500" : "border-gray-300"
+                  }`}
                 placeholder="Enter product name"
               />
               {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
@@ -263,9 +263,8 @@ const MarketEdit = ({ user }) => {
                   onChange={handleChange}
                   min="0"
                   step="0.01"
-                  className={`w-full pl-8 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
-                    errors.price ? "border-red-500" : "border-gray-300"
-                  }`}
+                  className={`w-full pl-8 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 ${errors.price ? "border-red-500" : "border-gray-300"
+                    }`}
                   placeholder="0.00"
                 />
               </div>
@@ -283,9 +282,8 @@ const MarketEdit = ({ user }) => {
                 name="location"
                 value={form.location}
                 onChange={handleChange}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
-                  errors.location ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 ${errors.location ? "border-red-500" : "border-gray-300"
+                  }`}
                 placeholder="Enter product location"
               />
               {errors.location && <p className="mt-1 text-sm text-red-600">{errors.location}</p>}
@@ -302,9 +300,8 @@ const MarketEdit = ({ user }) => {
                 name="source"
                 value={form.source}
                 onChange={handleChange}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
-                  errors.source ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 ${errors.source ? "border-red-500" : "border-gray-300"
+                  }`}
                 placeholder="Enter product source"
               />
               {errors.source && <p className="mt-1 text-sm text-red-600">{errors.source}</p>}

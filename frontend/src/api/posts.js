@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5000/api/posts";
+const API_URL = `${process.env.REACT_APP_API_BASE || "https://jibonjatra.onrender.com/api"}/posts`;
 
 // Get all posts (Public)
 export const fetchPosts = async () => {

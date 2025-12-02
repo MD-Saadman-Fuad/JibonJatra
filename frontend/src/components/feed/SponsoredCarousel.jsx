@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { sponsoredAPI } from '../../api/sponsored';
-// import { Navigate } from 'react-router-dom';
+import { getImageUrl } from '../../api/client';
 import { useNavigate } from 'react-router-dom';
 
 const SponsoredCarousel = () => {
@@ -14,7 +14,7 @@ const SponsoredCarousel = () => {
   const goToNext = useCallback(() => {
     if (sponsoredPosts.length === 0 || isTransitioning) return;
     setIsTransitioning(true);
-    setCurrentIndex((prevIndex) => 
+    setCurrentIndex((prevIndex) =>
       prevIndex === sponsoredPosts.length - 1 ? 0 : prevIndex + 1
     );
     setTimeout(() => setIsTransitioning(false), 300);
@@ -23,7 +23,7 @@ const SponsoredCarousel = () => {
   const goToPrev = useCallback(() => {
     if (sponsoredPosts.length === 0 || isTransitioning) return;
     setIsTransitioning(true);
-    setCurrentIndex((prevIndex) => 
+    setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? sponsoredPosts.length - 1 : prevIndex - 1
     );
     setTimeout(() => setIsTransitioning(false), 300);
@@ -38,7 +38,7 @@ const SponsoredCarousel = () => {
       const interval = setInterval(() => {
         goToNext();
       }, 5000);
-      
+
       return () => clearInterval(interval);
     }
   }, [sponsoredPosts.length, currentIndex, goToNext]);
@@ -102,7 +102,7 @@ const SponsoredCarousel = () => {
   }
 
   const currentPost = sponsoredPosts[currentIndex];
-  const imageUrl = currentPost.image ? `http://localhost:5000/${currentPost.image}` : null;
+  const imageUrl = getImageUrl(currentPost.image);
 
   return (
     <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl shadow-lg p-6 mb-8 border border-gray-100">
@@ -114,7 +114,7 @@ const SponsoredCarousel = () => {
           <span className="ml-2 text-xs text-gray-500">{currentIndex + 1} of {sponsoredPosts.length}</span>
         </div>
         <div className="flex space-x-2">
-          <button 
+          <button
             onClick={goToPrev}
             className="p-2 rounded-full bg-white shadow-sm hover:shadow-md transition-shadow duration-200 text-indigo-600 hover:bg-indigo-50 disabled:opacity-40 disabled:cursor-not-allowed"
             disabled={sponsoredPosts.length <= 1 || isTransitioning}
@@ -123,7 +123,7 @@ const SponsoredCarousel = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-          <button 
+          <button
             onClick={goToNext}
             className="p-2 rounded-full bg-white shadow-sm hover:shadow-md transition-shadow duration-200 text-indigo-600 hover:bg-indigo-50 disabled:opacity-40 disabled:cursor-not-allowed"
             disabled={sponsoredPosts.length <= 1 || isTransitioning}
@@ -134,15 +134,15 @@ const SponsoredCarousel = () => {
           </button>
         </div>
       </div>
-      
+
       <div className="relative overflow-hidden">
         <div className={`sponsored-card flex flex-col md:flex-row gap-6 transition-opacity duration-300 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
           {imageUrl && (
             <div className="md:w-2/3">
               <div className="relative overflow-hidden rounded-xl shadow-md">
-                <img 
-                  src={imageUrl} 
-                  alt={currentPost.title} 
+                <img
+                  src={imageUrl}
+                  alt={currentPost.title}
                   className="w-full h-48 object-cover transition-transform duration-500 hover:scale-105"
                   onError={(e) => {
                     console.error('SponsoredCarousel - Image failed to load:', imageUrl);
@@ -170,15 +170,14 @@ const SponsoredCarousel = () => {
           </div>
         </div>
       </div>
-      
+
       {sponsoredPosts.length > 1 && (
         <div className="flex justify-center space-x-2 mt-6">
           {sponsoredPosts.map((_, index) => (
             <button
               key={index}
-              className={`w-8 h-2 rounded-full transition-all duration-300 ${
-                index === currentIndex ? 'bg-indigo-600' : 'bg-gray-300 hover:bg-gray-400'
-              }`}
+              className={`w-8 h-2 rounded-full transition-all duration-300 ${index === currentIndex ? 'bg-indigo-600' : 'bg-gray-300 hover:bg-gray-400'
+                }`}
               onClick={() => goToSlide(index)}
               aria-label={`Go to slide ${index + 1}`}
             />

@@ -112,7 +112,7 @@ function App() {
             }
           />
 
-          {/* 🔽 ADD THESE TWO ROUTES */}
+
           <Route path="sponsored-posts" element={<SponsoredPosts />} />
           <Route
             path="admin/sponsored-posts"

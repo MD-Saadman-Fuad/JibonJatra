@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:5000/", // change to backend URL if deployed
+  baseURL: `${process.env.REACT_APP_API_BASE}`, // change to backend URL if deployed
 });
 
 api.interceptors.request.use((config) => {
@@ -14,8 +14,8 @@ api.interceptors.request.use((config) => {
 //   return api.put("/admin/role", { userId, role });
 // };
 //
-export const getUsers = () => api.get("/api/admin/users"); 
-export const updateUserRole = (userId, role) => api.put("/api/admin/role", { userId, role });
-export const deleteUser = (userId) => api.delete(`/api/admin/user/${userId}`);
+export const getUsers = () => api.get("/admin/users");
+export const updateUserRole = (userId, role) => api.put("/admin/role", { userId, role });
+export const deleteUser = (userId) => api.delete(`/admin/user/${userId}`);
 //
 export default api;

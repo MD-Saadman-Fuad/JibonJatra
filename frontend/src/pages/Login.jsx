@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
-import { 
-  User, Mail, Lock, ShoppingBag, Wrench, Home, Search, Hammer, Zap, Car, Package, 
-  Recycle, Heart, Phone, MapPin, Coffee, Scissors, PaintBucket, Laptop, Camera, 
-  Gift, Star, Shield, Truck, CreditCard, Clock, Globe, Lightbulb, Key, Coins, 
-  Handshake, Building, Briefcase, Gamepad2, Music, Book, Utensils, Shirt, Watch, 
+import image from "../assets/logo-transparant.png";
+import {
+  User, Mail, Lock, ShoppingBag, Wrench, Home, Search, Hammer, Zap, Car, Package,
+  Recycle, Heart, Phone, MapPin, Coffee, Scissors, PaintBucket, Laptop, Camera,
+  Gift, Star, Shield, Truck, CreditCard, Clock, Globe, Lightbulb, Key, Coins,
+  Handshake, Building, Briefcase, Gamepad2, Music, Book, Utensils, Shirt, Watch,
   Headphones, Bike, UserPlus, ArrowRight, Sparkles
 } from "lucide-react";
 
@@ -24,35 +25,35 @@ export default function Login({ setUser }) {
     { Icon: Handshake, color: "text-green-400", size: 34 },
     { Icon: Key, color: "text-yellow-500", size: 28 },
     { Icon: Shield, color: "text-blue-500", size: 31 },
-    
+
     // Shopping & commerce
     { Icon: ShoppingBag, color: "text-purple-400", size: 33 },
     { Icon: Gift, color: "text-red-400", size: 29 },
     { Icon: CreditCard, color: "text-indigo-400", size: 30 },
     { Icon: Coins, color: "text-yellow-400", size: 27 },
     { Icon: Truck, color: "text-gray-400", size: 35 },
-    
+
     // Services & tools
     { Icon: Wrench, color: "text-orange-400", size: 31 },
     { Icon: Hammer, color: "text-stone-400", size: 29 },
     { Icon: Scissors, color: "text-pink-400", size: 26 },
     { Icon: PaintBucket, color: "text-purple-500", size: 32 },
     { Icon: Camera, color: "text-teal-400", size: 30 },
-    
+
     // Tech & communication
     { Icon: Laptop, color: "text-blue-500", size: 34 },
     { Icon: Phone, color: "text-green-500", size: 27 },
     { Icon: Globe, color: "text-blue-400", size: 33 },
     { Icon: Zap, color: "text-yellow-400", size: 25 },
     { Icon: Lightbulb, color: "text-amber-400", size: 28 },
-    
+
     // Lifestyle & community
     { Icon: Home, color: "text-emerald-400", size: 31 },
     { Icon: Car, color: "text-blue-600", size: 36 },
     { Icon: Coffee, color: "text-amber-500", size: 29 },
     { Icon: Heart, color: "text-red-500", size: 26 },
     { Icon: Star, color: "text-yellow-500", size: 28 },
-    
+
     // Entertainment & hobbies
     { Icon: Music, color: "text-purple-400", size: 30 },
     { Icon: Gamepad2, color: "text-indigo-500", size: 32 },
@@ -89,15 +90,15 @@ export default function Login({ setUser }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.post("/api/auth/login", formData);
+      const response = await api.post("/auth/login", formData);
       localStorage.setItem("token", response.data.token);
 
       // Decode JWT payload
       const payload = JSON.parse(atob(response.data.token.split(".")[1]));
-      const loggedInUser = { 
-        email: payload.email, 
-        role: payload.role, 
-        id: payload.id 
+      const loggedInUser = {
+        email: payload.email,
+        role: payload.role,
+        id: payload.id
       };
 
       localStorage.setItem("user", JSON.stringify(loggedInUser));
@@ -111,7 +112,7 @@ export default function Login({ setUser }) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center p-4 relative overflow-hidden">
-      
+
       {/* Floating Background Icons */}
       <div className="absolute inset-0 pointer-events-none">
         {floatingIcons.map((item, index) => {
@@ -120,12 +121,12 @@ export default function Login({ setUser }) {
           const animation = animations[index % 3];
           const duration = `${2 + (index % 3)}s`;
           const delay = `${(index * 0.4)}s`;
-          
+
           return (
             <div
               key={index}
               className={`absolute ${generateRandomPosition(index)} ${color} opacity-25 ${animation} hover:opacity-45 transition-opacity duration-300`}
-              style={{ 
+              style={{
                 animationDuration: duration,
                 animationDelay: delay,
                 filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))'
@@ -140,13 +141,13 @@ export default function Login({ setUser }) {
       {/* Main Login Container */}
       <div className="w-full max-w-md relative z-10">
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
-          
+
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 p-8 text-center relative">
             <div className="absolute inset-0 bg-black opacity-10"></div>
             <div className="relative z-10">
               <div className="w-16 h-16 bg-white rounded-full mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <User className="text-blue-600" size={28} />
+                <img className="w-12 h-12" src={image} alt="Logo" />
               </div>
               <h1 className="text-3xl font-bold text-white mb-2 flex items-center justify-center gap-2">
                 <Star size={20} className="text-yellow-300" />
@@ -163,13 +164,14 @@ export default function Login({ setUser }) {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="p-8 space-y-6">
-            
+            <h1 className="text-center text-xl font-semibold mb-4">Enter These Credentials</h1>
+
             {/* Email Input */}
             <div className="relative group">
               <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors duration-200" size={20} />
               <input
                 type="email"
-                placeholder="Enter your email"
+                placeholder="admin@gmail.com"
                 value={formData.email}
                 onChange={(e) => handleInputChange('email', e.target.value)}
                 required
@@ -185,7 +187,7 @@ export default function Login({ setUser }) {
               <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-purple-500 transition-colors duration-200" size={20} />
               <input
                 type="password"
-                placeholder="Enter your password"
+                placeholder="admin"
                 value={formData.password}
                 onChange={(e) => handleInputChange('password', e.target.value)}
                 required

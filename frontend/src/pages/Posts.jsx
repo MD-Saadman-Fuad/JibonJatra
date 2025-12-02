@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import api from "../api";
+import { getImageUrl } from "../api/client";
 import { Link } from "react-router-dom";
 import { Calendar, MapPin, Tag, User, Search, Filter } from "lucide-react";
 
@@ -32,30 +33,30 @@ const Posts = () => {
   // Apply filters, search, and sorting
   useEffect(() => {
     let result = [...posts];
-    
+
     // Apply search filter
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
-      result = result.filter(post => 
+      result = result.filter(post =>
         post.title.toLowerCase().includes(term) ||
         post.content.toLowerCase().includes(term) ||
         (post.category && post.category.toLowerCase().includes(term)) ||
         (post.location && post.location.toLowerCase().includes(term))
       );
     }
-    
+
     // Apply category filter
     if (categoryFilter) {
       const term = categoryFilter.toLowerCase();
       result = result.filter(post => post.category && post.category.toLowerCase().includes(term));
     }
-    
+
     // Apply location filter
     if (locationFilter) {
       const term = locationFilter.toLowerCase();
       result = result.filter(post => post.location && post.location.toLowerCase().includes(term));
     }
-    
+
     // Apply sorting
     if (sortBy === "newest") {
       result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -64,7 +65,7 @@ const Posts = () => {
     } else if (sortBy === "title") {
       result.sort((a, b) => a.title.localeCompare(b.title));
     }
-    
+
     setFilteredPosts(result);
   }, [searchTerm, categoryFilter, locationFilter, sortBy, posts]);
 
@@ -125,7 +126,7 @@ const Posts = () => {
                 />
               </div>
             </div>
-            
+
             {/* Category Filter */}
             <div>
               <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">Category</label>
@@ -143,7 +144,7 @@ const Posts = () => {
                 />
               </div>
             </div>
-            
+
             {/* Location Filter */}
             <div>
               <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">Location</label>
@@ -232,7 +233,7 @@ const Posts = () => {
                 {post.images && post.images.length > 0 && (
                   <div className="relative h-48 overflow-hidden">
                     <img
-                      src={`http://localhost:5000/uploads/${post.images[0]}`}
+                      src={getImageUrl(post.images[0])}
                       alt={post.title}
                       className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                       onError={(e) => {
@@ -258,7 +259,7 @@ const Posts = () => {
                         <span>{post.author.name || post.author}</span>
                       </div>
                     )}
-                    
+
                     {post.category && (
                       <div className="flex items-center text-sm text-gray-600">
                         <Tag className="h-4 w-4 mr-2" />
@@ -267,14 +268,14 @@ const Posts = () => {
                         </span>
                       </div>
                     )}
-                    
+
                     {post.location && (
                       <div className="flex items-center text-sm text-gray-600">
                         <MapPin className="h-4 w-4 mr-2" />
                         <span>{post.location}</span>
                       </div>
                     )}
-                    
+
                     {post.createdAt && (
                       <div className="flex items-center text-sm text-gray-600">
                         <Calendar className="h-4 w-4 mr-2" />

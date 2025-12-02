@@ -4,7 +4,7 @@ export default function ItemList({ items }) {
       {items.map((item) => (
         <div key={item._id} className="flex gap-3 border rounded-lg p-3 shadow">
           {item.imageUrl && (
-            <img src={`http://localhost:5000${item.imageUrl}`} alt={item.title} className="w-24 h-24 object-cover rounded" />
+            <img src={`${getBackendUrl()}${item.imageUrl}`} alt={item.title} className="w-24 h-24 object-cover rounded" />
           )}
           <div>
             <h3 className="font-bold">{item.title}</h3>
