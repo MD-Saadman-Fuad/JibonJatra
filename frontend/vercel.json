@@ -18,6 +18,13 @@
       }
     },
     {
+      "src": "/manifest.json",
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": "s-maxage=86400"
+      }
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html"
     }

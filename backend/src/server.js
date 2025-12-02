@@ -13,11 +13,11 @@ import postRoutes from "./routes/postRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import announcementRoutes from "./routes/announcementRoutes.js";
 import serviceRoutes from "./routes/serviceRoutes.js";
-import itemRouter from "./routes/itemRoutes.js"; 
+import itemRouter from "./routes/itemRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 // import marketPriceRoutes from "./routes/marketPriceRoutes.js";
 import marketRoutes from "./routes/marketRoutes.js";
-import reviewRoutes from './routes/reviewRoutes.js'; 
+import reviewRoutes from './routes/reviewRoutes.js';
 import feedRoutes from './routes/feedRoutes.js';
 import sponsoredRoutes from './routes/sponsoredRoutes.js'; // ✅ ADDED SPONSORED ROUTES
 import homeRoutes from "./routes/homeRoutes.js"; // ✅ ADDED HOME ROUTES (NEW LINE)
@@ -30,7 +30,8 @@ const app = express();
 const allowedOrigins = [
   'http://localhost:3000',
   'https://jibonjatra-web.onrender.com',
-  process.env.FRONTEND_URL // Will be set in Render
+  process.env.FRONTEND_URL, // Will be set in Render
+  "https://jibonjatra-web.vercel.app",
 ];
 
 app.use(cors({
