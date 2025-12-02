@@ -16,9 +16,13 @@ export default function AdminAnnouncements() {
     try {
       setLoading(true);
       const res = await getAnnouncements();
-      setAnnouncements(res.data || []);
+      console.log('Announcements API response:', res.data); // Debug log
+      // Handle different response structures
+      const announcementsData = Array.isArray(res.data) ? res.data : (res.data.announcements || []);
+      setAnnouncements(announcementsData);
     } catch (err) {
       console.error("Failed to load announcements:", err);
+      setAnnouncements([]); // Set empty array on error
     } finally {
       setLoading(false);
     }
@@ -131,7 +135,7 @@ export default function AdminAnnouncements() {
       {loading && <p className="text-center text-gray-500">Loading announcements...</p>}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {announcements.map((a) => (
+        {Array.isArray(announcements) && announcements.map((a) => (
           <div
             key={a._id}
             className="bg-white shadow-lg rounded-2xl p-6 hover:shadow-2xl transition flex flex-col justify-between"
@@ -156,18 +160,18 @@ export default function AdminAnnouncements() {
               )}
 
 
-                {Array.isArray(a.viewedBy) && a.viewedBy.length > 0 && (
-                  <div className="mt-4">
-                    <h4 className="text-lg font-semibold text-blue-700 mb-2">Viewed By:</h4>
-                    <ul className="list-disc pl-5">
-                      {a.viewedBy.map((user) => (
-                        <li key={user._id || user.name} className="text-gray-700">
-                          {user.name || "Unknown User"}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+              {Array.isArray(a.viewedBy) && a.viewedBy.length > 0 && (
+                <div className="mt-4">
+                  <h4 className="text-lg font-semibold text-blue-700 mb-2">Viewed By:</h4>
+                  <ul className="list-disc pl-5">
+                    {a.viewedBy.map((user) => (
+                      <li key={user._id || user.name} className="text-gray-700">
+                        {user.name || "Unknown User"}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
 
             <div className="flex space-x-2 mt-4">

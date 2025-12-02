@@ -1,37 +1,45 @@
 
 
 import { useEffect, useState } from "react";
-import api from "../api";
+import api from "../api/client";
 import { useNavigate } from "react-router-dom";
 import { User, Mail, Shield, Heart, Laptop, ShoppingBag, Home } from "lucide-react";
 
-export default function Profile() {
-  const [user, setUser] = useState(null);
+export default function Profile({ user: userProp, setUser }) {
+  const [user, setLocalUser] = useState(userProp);
   const navigate = useNavigate();
 
-useEffect(() => {
+  useEffect(() => {
     const fetchProfile = async () => {
-      if (!user) {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          navigate("/login");
-          return;
-        }
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/login");
+        return;
+      }
 
-        try {
-          const res = await api.get("/api/profile", {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+      // If we already have user data from props, use it
+      if (userProp && userProp.id) {
+        setLocalUser(userProp);
+        return;
+      }
+
+      try {
+        const res = await api.get("/profile", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        console.log('Profile API response:', res.data); // Debug log
+        setLocalUser(res.data);
+        if (setUser) {
           setUser(res.data);
-        } catch (err) {
-          console.error(err);
-          navigate("/");
         }
+      } catch (err) {
+        console.error("Failed to fetch profile:", err);
+        navigate("/posts");
       }
     };
 
     fetchProfile();
-  }, [user, setUser, navigate]);
+  }, []); // Remove dependencies to prevent infinite loop
 
 
   if (!user) return <p className="p-4 text-center text-gray-600">Loading profile...</p>;
@@ -64,7 +72,7 @@ useEffect(() => {
 
       {/* Main card */}
       <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden transform hover:scale-105 transition-all duration-300">
-        
+
         {/* Header */}
         <div className="bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 p-8 text-center relative">
           <div className="absolute inset-0 bg-black opacity-10"></div>
@@ -124,8 +132,11 @@ useEffect(() => {
             className="w-full py-3 rounded-xl font-semibold text-white text-lg transition-all duration-300 transform bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 hover:scale-105"
             onClick={() => {
               localStorage.removeItem("token");
-              localStorage.removeItem("user"); // optional if you saved the whole user
-              setUser(null);
+              localStorage.removeItem("user");
+              setLocalUser(null);
+              if (setUser) {
+                setUser(null);
+              }
               navigate("/login");
             }}
           >

@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchServices, deleteServiceAPI } from "../api/services";
-import { getBackendUrl } from "../api/client";
+import { getImageUrl } from "../api/client";
 // import Rating from "../components/Rating";
 
 
@@ -21,10 +21,16 @@ export default function ServiceList({ token, user }) {
     try {
       setLoading(true);
       const res = await fetchServices();
-      setServices(res.data.items);
-      setFilteredServices(res.data.items);
+      console.log('Services API response:', res.data); // Debug log
+      // Handle different response structures
+      const servicesData = Array.isArray(res.data) ? res.data : (res.data.items || res.data.services || []);
+      setServices(servicesData);
+      setFilteredServices(servicesData);
     } catch (err) {
       console.error("Error loading services:", err);
+      // Set empty arrays on error to prevent map error
+      setServices([]);
+      setFilteredServices([]);
     } finally {
       setLoading(false);
     }
@@ -43,6 +49,12 @@ export default function ServiceList({ token, user }) {
 
   // Apply filters and search
   useEffect(() => {
+    // Ensure services is always an array before filtering
+    if (!Array.isArray(services)) {
+      setFilteredServices([]);
+      return;
+    }
+
     let result = services;
 
     // Apply search filter
@@ -194,13 +206,13 @@ export default function ServiceList({ token, user }) {
         {/* Results Count */}
         <div className="mb-6">
           <p className="text-gray-600">
-            {filteredServices.length} {filteredServices.length === 1 ? 'service' : 'services'} found
+            {Array.isArray(filteredServices) ? filteredServices.length : 0} {Array.isArray(filteredServices) && filteredServices.length === 1 ? 'service' : 'services'} found
             {(searchTerm || serviceTypeFilter || locationFilter) && " matching your criteria"}
           </p>
         </div>
 
         {/* Services Grid */}
-        {filteredServices.length === 0 ? (
+        {!Array.isArray(filteredServices) || filteredServices.length === 0 ? (
           <div className="bg-white rounded-xl shadow-sm p-8 text-center">
             <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -219,7 +231,7 @@ export default function ServiceList({ token, user }) {
               >
                 <div className="relative h-48 overflow-hidden">
                   <img
-                    src={s.servicePicture ? `${getBackendUrl()}${s.servicePicture}` : "/logo.png"}
+                    src={s.servicePicture ? getImageUrl(s.servicePicture) : "/logo.png"}
                     alt={s.serviceName}
                     className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                   />

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { fetchMarketItems, deleteMarketItemAPI } from "../api/market";
-import { getBackendUrl } from "../api/client";
+import { getImageUrl } from "../api/client";
 import { useNavigate } from "react-router-dom";
 
 const MarketList = ({ user }) => {
@@ -157,7 +157,7 @@ const MarketList = ({ user }) => {
                 {item.image ? (
                   <div className="relative h-48 overflow-hidden">
                     <img
-                      src={`${getBackendUrl()}${item.image}`}
+                      src={getImageUrl(item.image)}
                       alt={item.name}
                       className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                     />

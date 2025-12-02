@@ -1,7 +1,7 @@
 
 
 import React, { useEffect, useState } from "react";
-import api from "../api";
+import { fetchPosts } from "../api/posts";
 import { getImageUrl } from "../api/client";
 import { Link } from "react-router-dom";
 import { Calendar, MapPin, Tag, User, Search, Filter } from "lucide-react";
@@ -16,9 +16,9 @@ const Posts = () => {
   const [sortBy, setSortBy] = useState("newest");
 
   useEffect(() => {
-    const fetchPosts = async () => {
+    const loadPosts = async () => {
       try {
-        const { data } = await api.get("/api/posts");
+        const data = await fetchPosts();
         setPosts(data);
         setFilteredPosts(data);
       } catch (error) {
@@ -27,7 +27,7 @@ const Posts = () => {
         setLoading(false);
       }
     };
-    fetchPosts();
+    loadPosts();
   }, []);
 
   // Apply filters, search, and sorting
