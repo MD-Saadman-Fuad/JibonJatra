@@ -4,10 +4,6 @@
 
 JibonJatra is a local-market style web application that allows users to create and manage posts, market items, services, home rentals, reviews and advertisements. The project is built as a Node.js + Express REST API (backend) with a React frontend.
 
-![Screenshot](frontend/public/screenshot.png)
-
-> Place a screenshot at `frontend/public/screenshot.png` or update the path to where you store screenshots (for example `screenshots/`).
-
 ---
 
 ## Main Technologies
