@@ -32,6 +32,7 @@ const allowedOrigins = [
   'https://jibonjatra-web.onrender.com',
   process.env.FRONTEND_URL, // Will be set in Render
   "https://jibonjatra-web.vercel.app",
+  "https://jibonjatra.netlify.app"
 ];
 
 app.use(cors({
