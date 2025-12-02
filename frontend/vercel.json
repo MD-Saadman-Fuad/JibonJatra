@@ -23,7 +23,10 @@
     }
   ],
   "env": {
-    "REACT_APP_API_BASE": "@api_base_url"
+    "REACT_APP_API_BASE": "https://jibonjatra.onrender.com/api",
+    "REACT_APP_BACKEND_URL": "https://jibonjatra.onrender.com",
+    "GENERATE_SOURCEMAP": "false",
+    "CI": "false"
   },
   "buildCommand": "npm run build",
   "outputDirectory": "build",
