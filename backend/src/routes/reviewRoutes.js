@@ -10,14 +10,13 @@ import authMiddleware from '../middleware/auth.js'; // Import the default export
 
 const router = express.Router();
 
-// All routes are protected - use the auth middleware directly
-// The auth middleware function returns the actual middleware when called
-router.use(authMiddleware()); // Call it to get the middleware function
-
-router.post('/', createReview);
+// Public route to view service reviews
 router.get('/service/:serviceId', getServiceReviews);
-router.get('/user-review/:serviceId', getUserReviewForService);
-router.put('/:id', updateReview);
-router.delete('/:id', deleteReview);
+
+// Protected routes (require auth)
+router.post('/', authMiddleware(), createReview);
+router.get('/user-review/:serviceId', authMiddleware(), getUserReviewForService);
+router.put('/:id', authMiddleware(), updateReview);
+router.delete('/:id', authMiddleware(), deleteReview);
 
 export default router;

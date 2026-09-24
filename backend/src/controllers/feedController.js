@@ -24,7 +24,7 @@ export const getFeed = async (req, res) => {
     ] = await Promise.all([
       // Posts - uses 'user' field
       Post.find()
-        .populate('user', 'username profilePicture')
+        .populate('user', 'name email role')
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
@@ -32,7 +32,7 @@ export const getFeed = async (req, res) => {
       
       // Market items - uses 'createdBy' field
       Market.find()
-        .populate('createdBy', 'username profilePicture')
+        .populate('createdBy', 'name email role')
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
@@ -40,7 +40,7 @@ export const getFeed = async (req, res) => {
       
       // Products - uses 'owner' field
       Product.find()
-        .populate('owner', 'username profilePicture')
+        .populate('owner', 'name email role')
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
@@ -48,7 +48,7 @@ export const getFeed = async (req, res) => {
       
       // Lost & Found items - uses 'user' field
       Item.find()
-        .populate('user', 'username profilePicture')
+        .populate('user', 'name email role')
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
@@ -56,7 +56,7 @@ export const getFeed = async (req, res) => {
       
       // Services - uses 'createdBy' field
       Service.find()
-        .populate('createdBy', 'username profilePicture')
+        .populate('createdBy', 'name email role')
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
@@ -111,7 +111,7 @@ export const getFilteredFeed = async (req, res) => {
     switch (type) {
       case 'posts':
         content = await Post.find()
-          .populate('user', 'username profilePicture')
+          .populate('user', 'name email role')
           .sort({ createdAt: -1 })
           .skip(skip)
           .limit(limit)
@@ -121,7 +121,7 @@ export const getFilteredFeed = async (req, res) => {
 
       case 'market':
         content = await Market.find()
-          .populate('createdBy', 'username profilePicture')
+          .populate('createdBy', 'name email role')
           .sort({ createdAt: -1 })
           .skip(skip)
           .limit(limit)
@@ -131,7 +131,7 @@ export const getFilteredFeed = async (req, res) => {
 
       case 'products':
         content = await Product.find()
-          .populate('owner', 'username profilePicture')
+          .populate('owner', 'name email role')
           .sort({ createdAt: -1 })
           .skip(skip)
           .limit(limit)
@@ -141,7 +141,7 @@ export const getFilteredFeed = async (req, res) => {
 
       case 'lost-found':
         content = await Item.find()
-          .populate('user', 'username profilePicture')
+          .populate('user', 'name email role')
           .sort({ createdAt: -1 })
           .skip(skip)
           .limit(limit)
@@ -151,7 +151,7 @@ export const getFilteredFeed = async (req, res) => {
 
       case 'services':
         content = await Service.find()
-          .populate('createdBy', 'username profilePicture')
+          .populate('createdBy', 'name email role')
           .sort({ createdAt: -1 })
           .skip(skip)
           .limit(limit)

@@ -57,7 +57,7 @@ export const createSponsoredPost = async (req, res) => {
       endDate,
       priority: priority || 1,
       createdBy: req.user.id,
-      image: req.file ? req.file.path : null
+      image: req.file ? `/uploads/${req.file.filename}` : null
     });
 
     const createdPost = await sponsoredPost.save();
@@ -94,7 +94,7 @@ export const updateSponsoredPost = async (req, res) => {
     sponsoredPost.priority = priority || sponsoredPost.priority;
 
     if (req.file) {
-      sponsoredPost.image = req.file.path;
+      sponsoredPost.image = `/uploads/${req.file.filename}`;
     }
 
     const updatedPost = await sponsoredPost.save();

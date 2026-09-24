@@ -28,21 +28,26 @@ router.post("/register", async (req, res) => {
       name,
       email,
       password: hashed,
-      role: role || "resident", // default role
+      role: role || "resident",
       phone: phone || "",
       address: address || "",
     });
 
-    // Generate JWT token
-    const token = jwt.sign(
-      { id: user._id.toString(), role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" }
-    );
+    const userPayload = {
+      id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      phone: user.phone || "",
+      address: user.address || "",
+    };
 
-    return res.status(201).json({ token });
+    const jwtSecret = process.env.JWT_SECRET || "jibonjatra_secret_key_2026";
+    const token = jwt.sign(userPayload, jwtSecret, { expiresIn: "7d" });
+
+    return res.status(201).json({ token, user: userPayload });
   } catch (err) {
-    console.error(err);
+    console.error("Register error:", err);
     return res.status(500).json({ message: "Server error" });
   }
 });
@@ -66,15 +71,21 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Password didn't match" });
     }
 
-    const token = jwt.sign(
-      { id: user._id.toString(), role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" }
-    );
+    const userPayload = {
+      id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      phone: user.phone || "",
+      address: user.address || "",
+    };
 
-    return res.json({ token });
+    const jwtSecret = process.env.JWT_SECRET || "jibonjatra_secret_key_2026";
+    const token = jwt.sign(userPayload, jwtSecret, { expiresIn: "7d" });
+
+    return res.json({ token, user: userPayload });
   } catch (err) {
-    console.error(err);
+    console.error("Login error:", err);
     return res.status(500).json({ message: "Server error" });
   }
 });

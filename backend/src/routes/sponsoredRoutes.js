@@ -7,14 +7,14 @@ import {
   deleteSponsoredPost,
   getSponsoredPost
 } from '../controllers/sponsoredController.js';
-import auth from '../middleware/auth.js';
+import auth, { optionalAuth } from '../middleware/auth.js';
 import { upload } from '../utils/multer.js';
 
 const router = express.Router();
 
-// 🔒 CHANGED: Added auth() to require ANY authenticated user
-router.get('/', auth(), getSponsoredPosts);          // ← ADD auth()
-router.get('/:id', auth(), getSponsoredPost);        // ← ADD auth()
+// Public / Optional Auth routes for viewing sponsored posts
+router.get('/', optionalAuth, getSponsoredPosts);
+router.get('/:id', optionalAuth, getSponsoredPost);
 
 // Admin routes - require admin role (unchanged)
 router.get('/admin/all', auth('admin'), getAllSponsoredPosts);
