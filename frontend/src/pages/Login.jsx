@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import api from "../api";
 import image from "../assets/logo-transparant.png";
 import {
-  User, Mail, Lock, ShoppingBag, Wrench, Home, Search, Hammer, Zap, Car, Package,
-  Recycle, Heart, Phone, MapPin, Coffee, Scissors, PaintBucket, Laptop, Camera,
-  Gift, Star, Shield, Truck, CreditCard, Clock, Globe, Lightbulb, Key, Coins,
-  Handshake, Building, Briefcase, Gamepad2, Music, Book, Utensils, Shirt, Watch,
+  User, Mail, Lock, ShoppingBag, Wrench, Home, Hammer, Zap, Car,
+  Heart, Phone, Coffee, Scissors, PaintBucket, Laptop, Camera,
+  Gift, Star, Shield, Truck, CreditCard, Globe, Lightbulb, Key, Coins,
+  Handshake, Building, Briefcase, Gamepad2, Music, Book,
   Headphones, Bike, UserPlus, ArrowRight, Sparkles
 } from "lucide-react";
 
@@ -91,15 +91,20 @@ export default function Login({ setUser }) {
     e.preventDefault();
     try {
       const response = await api.post("/auth/login", formData);
-      localStorage.setItem("token", response.data.token);
+      const { token, user: serverUser } = response.data;
+      
+      localStorage.setItem("token", token);
 
-      // Decode JWT payload
-      const payload = JSON.parse(atob(response.data.token.split(".")[1]));
-      const loggedInUser = {
-        email: payload.email,
-        role: payload.role,
-        id: payload.id
-      };
+      let loggedInUser = serverUser;
+      if (!loggedInUser) {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        loggedInUser = {
+          id: payload.id,
+          role: payload.role,
+          name: payload.name || "User",
+          email: payload.email || formData.email
+        };
+      }
 
       localStorage.setItem("user", JSON.stringify(loggedInUser));
       setUser(loggedInUser);
@@ -108,6 +113,10 @@ export default function Login({ setUser }) {
     } catch (error) {
       alert(error.response?.data?.message || "Login failed");
     }
+  };
+
+  const handleForgotPassword = () => {
+    alert("Password reset is currently handled by system administrators. Please contact your community admin to reset your credentials.");
   };
 
   return (
@@ -212,7 +221,7 @@ export default function Login({ setUser }) {
             <div className="text-center">
               <button
                 type="button"
-                onClick={() => navigate("/forgot-password")}
+                onClick={handleForgotPassword}
                 className="text-blue-600 hover:text-blue-800 text-sm font-medium hover:underline transition-colors duration-200 flex items-center justify-center gap-1"
               >
                 <Key size={14} />

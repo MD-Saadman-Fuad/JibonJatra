@@ -138,7 +138,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import api from "../api";
 import { useNavigate, useParams } from "react-router-dom";
-import { Pencil, Image, MapPin, Tag, X, Camera, ArrowLeft } from "lucide-react";
+import { MapPin, Tag, X, Camera, ArrowLeft } from "lucide-react";
 
 const EditPost = () => {
   const { id } = useParams();
@@ -481,7 +481,7 @@ const EditPost = () => {
                       <div key={index} className="relative group">
                         <img
                           src={imageUrl}
-                          alt={`Existing image ${index + 1}`}
+                          alt={`Existing preview ${index + 1}`}
                           className="w-full h-24 object-cover rounded-lg border"
                         />
                         <button
@@ -507,7 +507,7 @@ const EditPost = () => {
                       <div key={index} className="relative group">
                         <img
                           src={preview}
-                          alt={`New image ${index + 1}`}
+                          alt={`New item preview ${index + 1}`}
                           className="w-full h-24 object-cover rounded-lg border"
                         />
                         <button

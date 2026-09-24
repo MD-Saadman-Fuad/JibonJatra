@@ -1,5 +1,4 @@
-import axios from "axios";
+import api from "./api/client";
 
-export const api = axios.create({
-  baseURL: process.env.REACT_APP_API_BASE || "https://jibonjatra.onrender.com/api",
-});
+export { api };
+export default api;

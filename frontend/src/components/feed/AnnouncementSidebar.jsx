@@ -1,234 +1,84 @@
 import React from 'react';
 import { getImageUrl } from '../../api/client';
-import { Link } from 'react-router-dom';
-
-// const AnnouncementSidebar = ({ announcements }) => {
-//   if (!announcements || announcements.length === 0) {
-//     return (
-//       <div className="bg-white rounded-lg shadow-sm p-4">
-//         <h2 className="text-lg font-semibold text-gray-900 mb-3 text-sm">Announcements</h2>
-//         <p className="text-gray-500 text-xs">No announcements at the moment.</p>
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div className="bg-white rounded-lg shadow-sm p-4 sticky top-6 w-80">
-//       <h2 className="text-lg font-semibold text-gray-900 mb-3 text-sm">Announcements 📢</h2>
-//       <div className="space-y-3 max-h-96 overflow-y-auto">
-//         {announcements.map((announcement) => (
-//           <div
-//             key={announcement._id}
-//             className="p-3 bg-blue-50 border border-blue-200 rounded-lg"
-//           >
-//             {/* Title */}
-//             <h3 className="font-medium text-blue-900 mb-2 text-sm">{announcement.title}</h3>
-            
-//             {/* Message/Content */}
-//             <p className="text-blue-800 text-xs mb-2 whitespace-pre-wrap">{announcement.message}</p>
-            
-//             {/* Image */}
-//             {announcement.image && (
-//               <img
-//                 src={getImageUrl(announcement.image)}
-//                 alt={announcement.title}
-//                 className="w-full h-32 object-cover rounded-md mb-2"
-//                 onError={(e) => {
-//                   e.target.style.display = 'none';
-//                 }}
-//               />
-//             )}
-            
-//             {/* Event Date (if available) */}
-//             {announcement.eventDate && (
-//               <div className="flex items-center mb-1">
-//                 <span className="text-blue-700 text-xs font-medium mr-1">📅 Event:</span>
-//                 <span className="text-blue-600 text-xs">
-//                   {new Date(announcement.eventDate).toLocaleDateString()}
-//                 </span>
-//               </div>
-//             )}
-            
-//             {/* Location (if available) */}
-//             {announcement.location && (
-//               <div className="flex items-center mb-1">
-//                 <span className="text-blue-700 text-xs font-medium mr-1">📍</span>
-//                 <span className="text-blue-600 text-xs">{announcement.location}</span>
-//               </div>
-//             )}
-            
-//             {/* Published Date */}
-//             <div className="flex items-center mb-1">
-//               <span className="text-blue-700 text-xs font-medium mr-1">📝</span>
-//               <span className="text-blue-600 text-xs">
-//                 {new Date(announcement.publishedDate).toLocaleDateString()}
-//               </span>
-//             </div>
-            
-//             {/* Priority Badge */}
-//             <div className="flex items-center mb-2">
-//               <span className="text-blue-700 text-xs font-medium mr-1">🚨</span>
-//               <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-//                 announcement.priority === 'high' 
-//                   ? 'bg-red-100 text-red-800' 
-//                   : announcement.priority === 'medium'
-//                   ? 'bg-yellow-100 text-yellow-800'
-//                   : 'bg-green-100 text-green-800'
-//               }`}>
-//                 {announcement.priority?.toUpperCase() || 'MEDIUM'}
-//               </span>
-//             </div>
-            
-//             {/* Status Badge */}
-//             <div className="flex items-center mb-2">
-//               <span className="text-blue-700 text-xs font-medium mr-1">Status:</span>
-//               <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-//                 announcement.isActive 
-//                   ? 'bg-green-100 text-green-800' 
-//                   : 'bg-gray-100 text-gray-800'
-//               }`}>
-//                 {announcement.isActive ? 'ACTIVE' : 'INACTIVE'}
-//               </span>
-//             </div>
-            
-//             {/* Author and Creation Date */}
-//             <div className="flex items-center justify-between text-xs text-blue-600 border-t border-blue-200 pt-2">
-//               <span>By {announcement.createdBy?.username || 'Admin'}</span>
-//               <span>{new Date(announcement.createdAt).toLocaleDateString()}</span>
-//             </div>
-            
-//             {/* Updated At (if different from created) */}
-//             {announcement.updatedAt && announcement.updatedAt !== announcement.createdAt && (
-//               <div className="text-xs text-blue-500 text-right mt-1">
-//                 Updated: {new Date(announcement.updatedAt).toLocaleDateString()}
-//               </div>
-//             )}
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default AnnouncementSidebar;
+import { Megaphone, Calendar, MapPin } from 'lucide-react';
 
 const AnnouncementSidebar = ({ announcements }) => {
   if (!announcements || announcements.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow-sm p-4">
-        <div className="flex justify-between items-center mb-3">
-          <h2 className="text-lg font-semibold text-gray-900 ">Announcements</h2>
-          <Link 
-            to="/announcements" 
-            className="text-xs text-blue-600 hover:text-blue-800 font-medium"
-          >
-            See All
-          </Link>
+      <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-2xs">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2 text-gray-900 font-bold text-sm">
+            <Megaphone size={16} className="text-blue-600" />
+            <span>Notice Board</span>
+          </div>
         </div>
-        <p className="text-gray-500 text-xs">No announcements at the moment.</p>
+        <p className="text-gray-400 text-xs py-2">No official announcements right now.</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-4 sticky top-6 w-80">
-      <div className="flex justify-between items-center mb-3">
-        <h2 className="text-lg font-semibold text-gray-900 ">Announcements 📢</h2>
-        <Link 
-          to="/announcements" 
-          className="text-xs text-blue-600 hover:text-blue-800 font-medium"
-        >
-          See All
-        </Link>
+    <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-2xs space-y-3">
+      <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+        <div className="flex items-center gap-2 text-gray-900 font-bold text-sm">
+          <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+            <Megaphone size={16} />
+          </div>
+          <span>Announcements</span>
+        </div>
+        <span className="px-2 py-0.5 bg-blue-100 text-blue-800 text-[10px] font-bold rounded-full">
+          {announcements.length} Active
+        </span>
       </div>
-      <div className="space-y-3 max-h-96 overflow-y-auto">
-        {announcements.map((announcement) => (
+
+      <div className="space-y-2.5 max-h-96 overflow-y-auto pr-1">
+        {announcements.map((item) => (
           <div
-            key={announcement._id}
-            className="p-3 bg-blue-50 border border-blue-200 rounded-lg"
+            key={item._id}
+            className="p-3 bg-gradient-to-br from-blue-50/60 to-indigo-50/30 border border-blue-100/80 rounded-xl space-y-2 group hover:border-blue-200 transition-all"
           >
-            {/* Title */}
-            <h3 className="font-medium text-blue-900 mb-2 text-sm">{announcement.title}</h3>
-            
-            {/* Message/Content */}
-            <p className="text-blue-800 text-xs mb-2 whitespace-pre-wrap">{announcement.message}</p>
-            
-            {/* Image */}
-            {announcement.image && (
+            <div className="flex items-start justify-between gap-1">
+              <h4 className="font-bold text-gray-900 text-xs group-hover:text-blue-600 transition-colors">
+                {item.title}
+              </h4>
+              {item.priority === 'high' && (
+                <span className="px-1.5 py-0.5 bg-rose-500 text-white text-[9px] font-extrabold rounded-md flex-shrink-0">
+                  URGENT
+                </span>
+              )}
+            </div>
+
+            <p className="text-gray-600 text-xs leading-relaxed line-clamp-3">
+              {item.message}
+            </p>
+
+            {item.image && (
               <img
-                src={getImageUrl(announcement.image)}
-                alt={announcement.title}
-                className="w-full h-32 object-cover rounded-md mb-2"
+                src={getImageUrl(item.image)}
+                alt={item.title}
+                className="w-full h-28 object-cover rounded-lg border border-blue-100"
                 onError={(e) => {
                   e.target.style.display = 'none';
                 }}
               />
             )}
-            
-            {/* Event Date (if available) */}
-            {announcement.eventDate && (
-              <div className="flex items-center mb-1">
-                <span className="text-blue-700 text-xs font-medium mr-1">📅 Event:</span>
-                <span className="text-blue-600 text-xs">
-                  {new Date(announcement.eventDate).toLocaleDateString()}
+
+            <div className="pt-1 flex items-center justify-between text-[11px] text-gray-400 border-t border-blue-100/40">
+              {item.eventDate ? (
+                <span className="flex items-center gap-1 text-blue-700 font-medium">
+                  <Calendar size={12} />
+                  <span>{new Date(item.eventDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
                 </span>
-              </div>
-            )}
-            
-            {/* Location (if available) */}
-            {announcement.location && (
-              <div className="flex items-center mb-1">
-                <span className="text-blue-700 text-xs font-medium mr-1">📍</span>
-                <span className="text-blue-600 text-xs">{announcement.location}</span>
-              </div>
-            )}
-            
-            {/* Published Date */}
-            <div className="flex items-center mb-1">
-              <span className="text-blue-700 text-xs font-medium mr-1">📝</span>
-              <span className="text-blue-600 text-xs">
-                {new Date(announcement.publishedDate).toLocaleDateString()}
-              </span>
+              ) : (
+                <span>By {item.createdBy?.name || 'Admin'}</span>
+              )}
+              {item.location && (
+                <span className="flex items-center gap-1 text-gray-500">
+                  <MapPin size={11} className="text-red-400" />
+                  <span className="truncate max-w-[90px]">{item.location}</span>
+                </span>
+              )}
             </div>
-            
-            {/* Priority Badge */}
-            <div className="flex items-center mb-2">
-              <span className="text-blue-700 text-xs font-medium mr-1">🚨</span>
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                announcement.priority === 'high' 
-                  ? 'bg-red-100 text-red-800' 
-                  : announcement.priority === 'medium'
-                  ? 'bg-yellow-100 text-yellow-800'
-                  : 'bg-green-100 text-green-800'
-              }`}>
-                {announcement.priority?.toUpperCase() || 'MEDIUM'}
-              </span>
-            </div>
-            
-            {/* Status Badge */}
-            <div className="flex items-center mb-2">
-              <span className="text-blue-700 text-xs font-medium mr-1">Status:</span>
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                announcement.isActive 
-                  ? 'bg-green-100 text-green-800' 
-                  : 'bg-gray-100 text-gray-800'
-              }`}>
-                {announcement.isActive ? 'ACTIVE' : 'INACTIVE'}
-              </span>
-            </div>
-            
-            {/* Author and Creation Date */}
-            <div className="flex items-center justify-between text-xs text-blue-600 border-t border-blue-200 pt-2">
-              <span>By {announcement.createdBy?.username || 'Admin'}</span>
-              <span>{new Date(announcement.createdAt).toLocaleDateString()}</span>
-            </div>
-            
-            {/* Updated At (if different from created) */}
-            {announcement.updatedAt && announcement.updatedAt !== announcement.createdAt && (
-              <div className="text-xs text-blue-500 text-right mt-1">
-                Updated: {new Date(announcement.updatedAt).toLocaleDateString()}
-              </div>
-            )}
           </div>
         ))}
       </div>

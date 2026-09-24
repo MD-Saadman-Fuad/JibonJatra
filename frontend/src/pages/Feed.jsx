@@ -8,6 +8,9 @@ import ServiceCard from '../components/feed/ServiceCard';
 import AnnouncementSidebar from '../components/feed/AnnouncementSidebar';
 import FilterTabs from '../components/feed/FilterTabs';
 import SponsoredCarousel from '../components/feed/SponsoredCarousel';
+import CreatePostPrompt from '../components/feed/CreatePostPrompt';
+import Sidebar from '../components/Sidebar';
+import { Sparkles, Loader2 } from 'lucide-react';
 
 const Feed = () => {
   const [feed, setFeed] = useState([]);
@@ -21,29 +24,23 @@ const Feed = () => {
   const fetchFeed = async (filter = 'all', pageNum = 1, shouldAppend = false) => {
     try {
       setLoading(true);
-      console.log('Fetching feed with filter:', filter);
-      
       const response = filter === 'all' 
         ? await feedAPI.getFeed(pageNum)
         : await feedAPI.getFilteredFeed(filter, pageNum);
 
-      console.log('API Response:', response.data);
-      
-      if (response.data.success) {
-        console.log('Feed data received:', response.data.feed);
-        console.log('Announcements received:', response.data.announcements);
-        
+      if (response.data?.success) {
+        const feedData = response.data.feed || [];
         if (shouldAppend) {
-          setFeed(prev => [...prev, ...response.data.feed]);
+          setFeed(prev => [...prev, ...feedData]);
         } else {
-          setFeed(response.data.feed);
+          setFeed(feedData);
         }
         setAnnouncements(response.data.announcements || []);
         setHasMore(response.data.pagination?.hasNext || false);
         setError('');
       }
     } catch (err) {
-      setError('Failed to load feed. Please try again.');
+      setError('Failed to load community feed. Please refresh or try again.');
       console.error('Feed error:', err);
     } finally {
       setLoading(false);
@@ -66,8 +63,6 @@ const Feed = () => {
   };
 
   const renderContent = (item) => {
-    console.log('Rendering item:', item._id, 'Type:', item.contentType, 'Data:', item);
-    
     switch (item.contentType) {
       case 'posts':
         return <PostCard key={`post-${item._id}`} post={item} />;
@@ -80,62 +75,83 @@ const Feed = () => {
       case 'services':
         return <ServiceCard key={`service-${item._id}`} service={item} />;
       default:
-        console.warn('Unknown content type:', item.contentType, item);
-        return null;
+        return <PostCard key={`generic-${item._id}`} post={item} />;
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 lg:max-w-4xl">
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Main Content - Single Column */}
-          <div className="w-full">
-            <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-              <h1 className="text-2xl font-bold text-gray-900 mb-4">Community Feed</h1>
-              
+    <div className="min-h-screen py-4 sm:py-6">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          
+          {/* Left Column: Navigation Sidebar (Desktop) */}
+          <div className="hidden lg:block lg:col-span-3 sticky top-20">
+            <Sidebar />
+          </div>
+
+          {/* Center Column: Feed Timeline */}
+          <div className="lg:col-span-6 space-y-4">
+            {/* Create Post Prompt Box */}
+            <CreatePostPrompt />
+
+            {/* Filter Tabs Navigation */}
+            <div className="bg-white rounded-2xl border border-gray-100 p-3 shadow-2xs">
               <FilterTabs 
                 activeFilter={activeFilter} 
                 onFilterChange={handleFilterChange} 
               />
             </div>
 
+            {/* Error Message Alert */}
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-                <p className="text-red-700">{error}</p>
+              <div className="bg-rose-50 border border-rose-200 text-rose-700 rounded-2xl p-4 text-sm font-medium">
+                {error}
               </div>
             )}
 
-            <div className="space-y-6">
+            {/* Feed Cards Stream */}
+            <div className="space-y-4">
               {feed.length === 0 && !loading ? (
-                <div className="bg-white rounded-lg shadow-sm p-8 text-center">
-                  <p className="text-gray-500 text-lg">No content found. Be the first to post!</p>
+                <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center space-y-3 shadow-2xs">
+                  <div className="w-12 h-12 rounded-full bg-blue-50 text-blue-500 mx-auto flex items-center justify-center">
+                    <Sparkles size={24} />
+                  </div>
+                  <h3 className="font-bold text-gray-900 text-base">No posts found in this category</h3>
+                  <p className="text-gray-500 text-xs max-w-sm mx-auto">
+                    Be the first in your community to post an update, list a product, or offer a service!
+                  </p>
                 </div>
               ) : (
                 feed.map(renderContent)
               )}
             </div>
 
-            {hasMore && (
-              <div className="mt-8 text-center">
+            {/* Loading Spinner Skeleton */}
+            {loading && (
+              <div className="flex justify-center py-6">
+                <Loader2 className="animate-spin text-blue-600" size={28} />
+              </div>
+            )}
+
+            {/* Load More Button */}
+            {hasMore && !loading && (
+              <div className="pt-2 text-center">
                 <button
                   onClick={handleLoadMore}
-                  disabled={loading}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium disabled:opacity-50 transition-colors duration-200"
+                  className="bg-white hover:bg-gray-50 text-blue-600 font-bold px-6 py-2.5 rounded-full text-xs border border-gray-200 shadow-2xs transition-all active:scale-95"
                 >
-                  {loading ? 'Loading...' : 'Load More'}
+                  Load More Updates
                 </button>
               </div>
             )}
           </div>
 
-          {/* Sidebar - Hidden on smaller screens, shown on larger ones */}
-          <div className="hidden lg:block lg:w-80">
-            <div className="sticky top-6 space-y-6">
-              <AnnouncementSidebar announcements={announcements} />
-              <SponsoredCarousel />
-            </div>
+          {/* Right Column: Noticeboard & Sponsored Posts */}
+          <div className="hidden lg:block lg:col-span-3 sticky top-20 space-y-4">
+            <AnnouncementSidebar announcements={announcements} />
+            <SponsoredCarousel />
           </div>
+
         </div>
       </div>
     </div>

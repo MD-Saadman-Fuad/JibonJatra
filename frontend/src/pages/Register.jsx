@@ -3,14 +3,14 @@ import { useNavigate } from "react-router-dom";
 import api from "../api";
 import { 
   User, Mail, Lock, Users, UserPlus,
-  ShoppingBag, Wrench, Hammer, Zap, Car, Package, Recycle, Heart, Phone, MapPin,
-  Coffee, Scissors, PaintBucket, Laptop, Camera, Gift, Star, Shield, Truck, CreditCard,
-  Clock, Globe, Lightbulb, Key, Coins, Handshake, Building, Briefcase, Gamepad2,
-  Music, Book, Utensils, Shirt, Watch, Headphones, Bike, Home, Store, 
-  Crown, CheckCircle, ArrowRight, Sparkles, Target, Award, Flame
+  ShoppingBag, Wrench, Hammer, Zap, Car, Package, Heart, Phone, MapPin,
+  Coffee, Scissors, Laptop, Camera, Gift, Star, Shield, Truck,
+  Clock, Globe, Lightbulb, Key, Handshake, Building, Briefcase,
+  Music, Home, Store, 
+  Crown, ArrowRight, Sparkles, Target, Award
 } from "lucide-react";
 
-export default function Register() {
+export default function Register({ setUser }) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -84,9 +84,27 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.post("/api/auth/register", formData);
-      localStorage.setItem("token", response.data.token);
-      navigate("/profile");
+      const response = await api.post("/auth/register", formData);
+      const { token, user: registeredUser } = response.data;
+      
+      localStorage.setItem("token", token);
+      
+      let loggedInUser = registeredUser;
+      if (!loggedInUser) {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        loggedInUser = {
+          id: payload.id,
+          role: payload.role || formData.role,
+          name: payload.name || formData.name,
+          email: payload.email || formData.email
+        };
+      }
+
+      localStorage.setItem("user", JSON.stringify(loggedInUser));
+      if (typeof setUser === 'function') {
+        setUser(loggedInUser);
+      }
+      navigate("/feed");
     } catch (error) {
       alert(error.response?.data?.message || "Registration failed");
     }

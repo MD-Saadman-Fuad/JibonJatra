@@ -1,9 +1,8 @@
-
-
 import { useEffect, useState } from "react";
 import api from "../api/client";
 import { useNavigate } from "react-router-dom";
-import { User, Mail, Shield, Heart, Laptop, ShoppingBag, Home } from "lucide-react";
+import { User, Mail, Shield, Phone, Edit3, LogOut } from "lucide-react";
+import Sidebar from "../components/Sidebar";
 
 export default function Profile({ user: userProp, setUser }) {
   const [user, setLocalUser] = useState(userProp);
@@ -17,17 +16,13 @@ export default function Profile({ user: userProp, setUser }) {
         return;
       }
 
-      // If we already have user data from props, use it
       if (userProp && userProp.id) {
         setLocalUser(userProp);
         return;
       }
 
       try {
-        const res = await api.get("/profile", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        console.log('Profile API response:', res.data); // Debug log
+        const res = await api.get("/profile");
         setLocalUser(res.data);
         if (setUser) {
           setUser(res.data);
@@ -39,110 +34,123 @@ export default function Profile({ user: userProp, setUser }) {
     };
 
     fetchProfile();
-  }, []); // Remove dependencies to prevent infinite loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
+  if (!user) {
+    return (
+      <div className="flex justify-center py-12">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600" />
+      </div>
+    );
+  }
 
-  if (!user) return <p className="p-4 text-center text-gray-600">Loading profile...</p>;
-
+  const getUserInitials = () => {
+    const name = user.name || user.email || "User";
+    return name.slice(0, 2).toUpperCase();
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center p-6 relative overflow-hidden">
-
-      {/* Floating background icons */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute animate-bounce top-10 left-12 opacity-20">
-          <User size={40} className="text-blue-300" />
-        </div>
-        <div className="absolute animate-pulse top-1/4 right-16 opacity-20">
-          <Shield size={50} className="text-green-300" />
-        </div>
-        <div className="absolute animate-bounce top-1/2 left-20 opacity-20">
-          <Laptop size={35} className="text-yellow-300" />
-        </div>
-        <div className="absolute animate-pulse top-3/4 right-10 opacity-20">
-          <Heart size={40} className="text-purple-300" />
-        </div>
-        <div className="absolute animate-bounce top-3/5 left-1/2 opacity-20">
-          <ShoppingBag size={35} className="text-pink-300" />
-        </div>
-        <div className="absolute animate-pulse top-2/5 right-1/4 opacity-20">
-          <Home size={40} className="text-teal-300" />
-        </div>
-      </div>
-
-      {/* Main card */}
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden transform hover:scale-105 transition-all duration-300">
-
-        {/* Header */}
-        <div className="bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 p-8 text-center relative">
-          <div className="absolute inset-0 bg-black opacity-10"></div>
-          <div className="relative z-10">
-            <div className="w-16 h-16 bg-white rounded-full mx-auto mb-4 flex items-center justify-center shadow-lg">
-              <User className="text-green-600" size={28} />
-            </div>
-            <h1 className="text-3xl font-bold text-white mb-2">Your Profile</h1>
-            <p className="text-blue-100">View your account details</p>
-          </div>
-        </div>
-
-        {/* Profile info */}
-        <div className="p-8 space-y-4">
-
-          <div className="flex items-center bg-gray-50 p-3 rounded-xl shadow-sm hover:shadow-md transition-all duration-200">
-            <User className="text-blue-500 mr-4" size={24} />
-            <div>
-              <p className="text-gray-500 text-sm">Full Name</p>
-              <p className="font-semibold text-gray-800">{user.name}</p>
-            </div>
+    <div className="min-h-screen py-4 sm:py-6">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Left Navigation */}
+          <div className="hidden lg:block lg:col-span-3 sticky top-20">
+            <Sidebar user={user} />
           </div>
 
-          <div className="flex items-center bg-gray-50 p-3 rounded-xl shadow-sm hover:shadow-md transition-all duration-200">
-            <Mail className="text-green-500 mr-4" size={24} />
-            <div>
-              <p className="text-gray-500 text-sm">Email</p>
-              <p className="font-semibold text-gray-800">{user.email}</p>
+          {/* Profile Content */}
+          <div className="lg:col-span-9 max-w-2xl mx-auto w-full space-y-4">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-2xs overflow-hidden">
+              {/* Cover Banner */}
+              <div className="h-32 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 relative">
+                <div className="absolute -bottom-10 left-6">
+                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-indigo-700 text-white font-black text-2xl flex items-center justify-center border-4 border-white shadow-md">
+                    {getUserInitials()}
+                  </div>
+                </div>
+              </div>
+
+              {/* Header Info */}
+              <div className="pt-12 px-6 pb-6 space-y-6">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-gray-100 pb-4">
+                  <div>
+                    <h1 className="text-xl font-bold text-gray-900">{user.name || "Community Member"}</h1>
+                    <p className="text-xs text-gray-500">{user.email}</p>
+                    <span className="inline-block mt-1.5 px-3 py-0.5 bg-blue-50 text-blue-700 text-xs font-bold rounded-full uppercase tracking-wider">
+                      {user.role || "Resident"}
+                    </span>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => navigate("/profile/edit")}
+                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-full shadow-xs transition-all flex items-center gap-1.5"
+                    >
+                      <Edit3 size={14} />
+                      <span>Edit Profile</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("user");
+                        setLocalUser(null);
+                        if (setUser) setUser(null);
+                        navigate("/login");
+                      }}
+                      className="px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold rounded-full transition-all flex items-center gap-1.5"
+                    >
+                      <LogOut size={14} />
+                      <span>Log Out</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Info Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                  <div className="p-3 bg-gray-50 rounded-xl border border-gray-100 flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
+                      <User size={16} />
+                    </div>
+                    <div>
+                      <p className="text-gray-400 font-medium">Full Name</p>
+                      <p className="font-bold text-gray-800">{user.name || "N/A"}</p>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-gray-50 rounded-xl border border-gray-100 flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold">
+                      <Mail size={16} />
+                    </div>
+                    <div>
+                      <p className="text-gray-400 font-medium">Email Address</p>
+                      <p className="font-bold text-gray-800">{user.email || "N/A"}</p>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-gray-50 rounded-xl border border-gray-100 flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center font-bold">
+                      <Shield size={16} />
+                    </div>
+                    <div>
+                      <p className="text-gray-400 font-medium">Account Role</p>
+                      <p className="font-bold text-gray-800 capitalize">{user.role || "Resident"}</p>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-gray-50 rounded-xl border border-gray-100 flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center font-bold">
+                      <Phone size={16} />
+                    </div>
+                    <div>
+                      <p className="text-gray-400 font-medium">Phone Contact</p>
+                      <p className="font-bold text-gray-800">{user.phone || "Not specified"}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-
-          <div className="flex items-center bg-gray-50 p-3 rounded-xl shadow-sm hover:shadow-md transition-all duration-200">
-            <Shield className="text-purple-500 mr-4" size={24} />
-            <div>
-              <p className="text-gray-500 text-sm">Role</p>
-              <p className="font-semibold text-gray-800">{user.role}</p>
-            </div>
-          </div>
-
-          {/* <div className="flex items-center bg-gray-50 p-3 rounded-xl shadow-sm hover:shadow-md transition-all duration-200">
-            <Laptop className="text-yellow-500 mr-4" size={24} />
-            <div>
-              <p className="text-gray-500 text-sm">Device</p>
-              <p className="font-semibold text-gray-800">{navigator.userAgent}</p>
-            </div>
-          </div> */}
-
-          {/* Buttons */}
-          <button
-            className="w-full py-3 rounded-xl font-semibold text-white text-lg transition-all duration-300 transform bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 hover:scale-105"
-            onClick={() => navigate("/profile/edit")}
-          >
-            Edit Profile
-          </button>
-
-          <button
-            className="w-full py-3 rounded-xl font-semibold text-white text-lg transition-all duration-300 transform bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 hover:scale-105"
-            onClick={() => {
-              localStorage.removeItem("token");
-              localStorage.removeItem("user");
-              setLocalUser(null);
-              if (setUser) {
-                setUser(null);
-              }
-              navigate("/login");
-            }}
-          >
-            Logout
-          </button>
-
         </div>
       </div>
     </div>

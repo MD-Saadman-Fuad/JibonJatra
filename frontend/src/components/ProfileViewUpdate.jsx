@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../api/client';
 
 export default function ProfileViewUpdate({ user, onUpdate }) {
   const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '', phone: '', address: '' });
@@ -48,20 +49,8 @@ export default function ProfileViewUpdate({ user, onUpdate }) {
     if (form.password.trim()) updateData.password = form.password;
 
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_BASE || "https://jibonjatra.onrender.com/api"}/profile`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify(updateData),
-      });
-
-      if (!res.ok) {
-        const errData = await res.json();
-        setMessage(errData.message || 'Update failed');
-        setLoading(false);
-        return;
-      }
-
-      const updatedUser = await res.json();
+      const res = await api.put('/profile', updateData);
+      const updatedUser = res.data;
       setMessage('Profile updated successfully');
       setForm((f) => ({ ...f, password: '', confirmPassword: '' }));
 
@@ -72,8 +61,8 @@ export default function ProfileViewUpdate({ user, onUpdate }) {
       } else {
         if (onUpdate) onUpdate(updatedUser);
       }
-    } catch {
-      setMessage('Error updating profile');
+    } catch (err) {
+      setMessage(err.response?.data?.message || 'Error updating profile');
     }
     setLoading(false);
   };

@@ -1,22 +1,13 @@
-const API_URL = `${process.env.REACT_APP_API_BASE || "https://jibonjatra.onrender.com/api"}/posts`;
+import api from "./client";
 
 // Get all posts (Public)
 export const fetchPosts = async () => {
-  const res = await fetch(API_URL);
-  if (!res.ok) throw new Error("Failed to fetch posts");
-  return res.json();
+  const res = await api.get("/posts");
+  return res.data;
 };
 
 // Create a new post (Requires token)
-export const createPost = async (postData, token) => {
-  const res = await fetch(API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
-    },
-    body: JSON.stringify(postData)
-  });
-  if (!res.ok) throw new Error("Failed to create post");
-  return res.json();
+export const createPost = async (postData) => {
+  const res = await api.post("/posts", postData);
+  return res.data;
 };
